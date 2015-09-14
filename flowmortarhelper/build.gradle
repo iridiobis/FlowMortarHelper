@@ -35,7 +35,7 @@ def gitCount = 'git rev-list master --first-parent --count'.execute([], project.
 
 //Version information
 def versionMajor = 0
-def versionMinor = 1
+def versionMinor = 2
 def versionBuild = (gitCount?.trim()) ? gitCount.toInteger() : 0
 
 project.ext.versionCode = versionMajor * 1000 + versionMinor * 100 + versionBuild
@@ -45,7 +45,7 @@ version = project.versionName
 
 def siteUrl = 'https://github.com/iridiobis/FlowMortarHelper'      // Homepage URL of the library
 def gitUrl = 'https://github.com/iridiobis/FlowMortarHelper.git'   // Git repository URL
-group = "com.github.iridiobis.flowmortarhelper"
+group = "com.github.iridiobis"
 
 android {
     compileSdkVersion 23
@@ -169,6 +169,7 @@ install {
                 // Add your description here
                 name 'Flow Mortar Helper'
                 url siteUrl
+                description 'Simple library with basic classes to ease the usage of Flow and Mortar'
 
                 // Set your license
                 licenses {
