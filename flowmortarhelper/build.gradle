@@ -41,6 +41,8 @@ def versionBuild = (gitCount?.trim()) ? gitCount.toInteger() : 0
 project.ext.versionCode = versionMajor * 1000 + versionMinor * 100 + versionBuild
 project.ext.versionName = "${versionMajor}.${versionMinor}"
 
+version = project.versionName
+
 def siteUrl = 'https://github.com/iridiobis/FlowMortarHelper'      // Homepage URL of the library
 def gitUrl = 'https://github.com/iridiobis/FlowMortarHelper.git'   // Git repository URL
 group = "com.github.iridiobis.flowmortarhelper"
