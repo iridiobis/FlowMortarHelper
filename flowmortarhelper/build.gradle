@@ -79,6 +79,7 @@ bintray {
         vcsUrl = 'https://github.com/iridiobis/FlowMortarHelper'
         version {
             name = project.versionName
+            vcsTag = project.versionName
         }
     }
 
