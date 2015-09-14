@@ -5,15 +5,16 @@ buildscript {
     }
     dependencies {
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
     }
 }
-
 plugins {
     id "com.jfrog.bintray" version "1.3.1"
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.github.dcendents.android-maven'
 
 Map<String, String> versions = [
         support: '23.0.1',
@@ -40,6 +41,10 @@ def versionBuild = (gitCount?.trim()) ? gitCount.toInteger() : 0
 project.ext.versionCode = versionMajor * 1000 + versionMinor * 100 + versionBuild
 project.ext.versionName = "${versionMajor}.${versionMinor}"
 
+def siteUrl = 'https://github.com/iridiobis/FlowMortarHelper'      // Homepage URL of the library
+def gitUrl = 'https://github.com/iridiobis/FlowMortarHelper.git'   // Git repository URL
+group = "com.github.iridiobis.flowmortarhelper"
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
@@ -64,6 +69,19 @@ android {
 bintray {
     user = bintrayUser
     key = bintrayApiKey
+    configurations = ['archives']
+
+    pkg {
+        repo = 'maven'
+        name = 'flow-mortar-helper'
+        userOrg = bintrayUser
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/iridiobis/FlowMortarHelper'
+        version {
+            name = project.versionName
+        }
+    }
+
 }
 
 dependencies {
@@ -82,21 +100,21 @@ dependencies {
 }
 
 android.libraryVariants.all { variant ->
-
-    def name = variant.name.capitalize()
-    task "javadoc$name"(type: Javadoc, dependsOn: "assemble$name") {
-        description = "Generates javadoc for build $name"
-        destinationDir = new File(destinationDir, variant.baseName)
-        source = files(variant.javaCompile.source)
-        classpath = files(android.getBootClasspath(), variant.javaCompile.classpath)
-        exclude '**/R.html', '**/R.*.html', '**/index.html'
-        failOnError false
-    }
-
-    task "javadocJar$name"(type: Jar, dependsOn: "javadoc$name") {
-        classifier = 'javadoc'
-        from tasks."javadoc$name".destinationDir
-    }
+//
+//    def name = variant.name.capitalize()
+//    task "javadoc$name"(type: Javadoc, dependsOn: "assemble$name") {
+//        description = "Generates javadoc for build $name"
+//        destinationDir = new File(destinationDir, variant.baseName)
+//        source = files(variant.javaCompile.source)
+//        classpath = files(android.getBootClasspath(), variant.javaCompile.classpath)
+//        exclude '**/R.html', '**/R.*.html', '**/index.html'
+//        failOnError false
+//    }
+//
+//    task "javadocJar$name"(type: Jar, dependsOn: "javadoc$name") {
+//        classifier = 'javadoc'
+//        from tasks."javadoc$name".destinationDir
+//    }
 
     def baseName = "fmh"
     def builtName = variant.buildType.name
@@ -118,8 +136,59 @@ android.libraryVariants.all { variant ->
     }
 }
 
-
-task sources(type: Jar, dependsOn: assembleRelease) {
-    classifier = 'sources'
+task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
 }
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    failOnError false
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+
+                // Add your description here
+                name 'Flow Mortar Helper'
+                url siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'iridiobis'
+                        name 'Jose Luis Benito'
+                        email 'iridiobis@gmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+
+                }
+            }
+        }
+    }
+}
+
