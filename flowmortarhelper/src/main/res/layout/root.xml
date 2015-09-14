@@ -1,0 +1,43 @@
+<es.iridiobis.flowmortarhelper.RootView
+    android:id="@+id/drawer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="es.iridiobis.flowmortarhelper.RootActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            android:elevation="3dp"
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ToolbarTheme"/>
+
+        <es.iridiobis.flowmortarhelper.flow.FramePathContainerView
+            android:id="@+id/root_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </LinearLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/root_navigation"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#fff"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/drawer_header"
+        app:insetForeground="#4000"
+        app:itemIconTint="@drawable/drawer_icon_color"
+        app:menu="@menu/drawer"
+        />
+
+</es.iridiobis.flowmortarhelper.RootView>
